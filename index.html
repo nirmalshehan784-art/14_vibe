@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ආදරෙයි ❤️ — නිර්මල් සහ ඔයා</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+
+<!-- Libraries -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   Palette: void #07040d · deep aurora #1a0f2e · rose gold #c98a6b
+            bloom pink #ff5f9e · amethyst #9d5cff · soft white #f6eef2
+   Display: Playfair Display (Latin headings) — Cormorant (accents)
+   Sinhala: Noto Sans Sinhala throughout for all Sinhala copy
+   Signature: the "Two Skies, One Heart" globe-arc in the Distance
+   section — a living line of light between two countries.
+   ============================================================ */
+:root{
+  --void:#07040d;
+  --aurora:#1a0f2e;
+  --aurora2:#241338;
+  --rosegold:#c98a6b;
+  --pink:#ff5f9e;
+  --amethyst:#9d5cff;
+  --white:#f6eef2;
+  --white-dim:rgba(246,238,242,0.7);
+  --glass:rgba(255,255,255,0.05);
+  --glass-border:rgba(255,255,255,0.12);
+  --font-si:'Noto Sans Sinhala',sans-serif;
+  --font-display:'Playfair Display',serif;
+  --font-accent:'Cormorant Garamond',serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--white);
+  font-family:var(--font-si);
+  overflow-x:hidden;
+  cursor:none;
+  min-height:100vh;
+}
+@media (max-width: 900px){ body{ cursor:auto; } }
+
+img{max-width:100%;display:block;}
+section{position:relative;padding:120px 6vw;overflow:hidden;}
+h1,h2,h3{font-family:var(--font-display);}
+.eyebrow{
+  font-family:var(--font-accent);
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:var(--rosegold);
+  font-size:0.8rem;
+  display:block;
+  margin-bottom:18px;
+}
+
+/* ---------- custom cursor ---------- */
+.cursor-dot,.cursor-glow{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  border-radius:50%;transform:translate(-50%,-50%);
+}
+.cursor-dot{width:8px;height:8px;background:var(--pink);box-shadow:0 0 10px var(--pink);}
+.cursor-glow{
+  width:280px;height:280px;
+  background:radial-gradient(circle, rgba(255,95,158,0.10) 0%, rgba(157,92,255,0.06) 40%, transparent 70%);
+  transition:transform 0.12s ease-out;
+}
+@media (max-width:900px){ .cursor-dot,.cursor-glow{display:none;} }
+
+/* ---------- scroll progress ---------- */
+#scroll-progress{
+  position:fixed;top:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--rosegold),var(--pink),var(--amethyst));
+  z-index:9998;width:0%;
+  box-shadow:0 0 10px var(--pink);
+}
+
+/* ---------- aurora + stars background (global) ---------- */
+.bg-fixed{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--void);}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.35;}
+.aurora-blob.b1{width:600px;height:600px;background:var(--amethyst);top:-200px;left:-150px;animation:float1 22s ease-in-out infinite;}
+.aurora-blob.b2{width:500px;height:500px;background:var(--pink);bottom:-150px;right:-100px;animation:float2 26s ease-in-out infinite;}
+.aurora-blob.b3{width:400px;height:400px;background:var(--rosegold);top:40%;left:40%;animation:float3 30s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(80px,60px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-60px,-80px);}}
+@keyframes float3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-40px) scale(1.15);}}
+#stars-canvas{position:fixed;inset:0;z-index:-1;}
+
+/* ---------- floating particles: hearts / petals / butterflies ---------- */
+.floaty{
+  position:fixed;top:110%;pointer-events:none;z-index:1;opacity:0.85;
+  animation-name:rise;animation-timing-function:linear;animation-iteration-count:infinite;
+}
+@keyframes rise{
+  0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}
+  10%{opacity:0.9;}
+  90%{opacity:0.7;}
+  100%{transform:translateY(-115vh) translateX(var(--drift,40px)) rotate(360deg);opacity:0;}
+}
+
+/* ---------- loading screen ---------- */
+#loader{
+  position:fixed;inset:0;z-index:10000;background:var(--void);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1.4s ease, visibility 1.4s ease;
+}
+#loader.hide{opacity:0;visibility:hidden;}
+.loader-ring{
+  width:90px;height:90px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.08);
+  border-top:2px solid var(--pink);
+  border-right:2px solid var(--amethyst);
+  animation:spin 1.6s linear infinite;
+  margin-bottom:34px;
+  position:relative;
+}
+.loader-ring::after{
+  content:'❤';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;color:var(--pink);animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:0.85;}50%{transform:scale(1.25);opacity:1;}}
+#loader p{font-size:1.2rem;letter-spacing:0.05em;color:var(--white-dim);text-align:center;padding:0 20px;}
+
+/* ---------- opening scene ---------- */
+#opening{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 6vw;
+}
+.opening-stage{display:none;flex-direction:column;align-items:center;gap:34px;}
+.opening-stage.active{display:flex;animation:fadeUp 1.4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.opening-text{
+  font-size:clamp(1.3rem,3.2vw,2.1rem);
+  font-weight:500;max-width:780px;line-height:1.6;
+  text-shadow:0 0 30px rgba(255,95,158,0.35);
+}
+.globe-wrap{position:relative;width:min(560px,86vw);aspect-ratio:1/1;}
+#globe-svg{width:100%;height:100%;}
+.giftbox{
+  cursor:pointer;width:150px;height:150px;position:relative;
+  filter:drop-shadow(0 0 30px rgba(255,95,158,0.5));
+  transition:transform 0.4s ease;
+}
+.giftbox:hover{transform:scale(1.08) translateY(-4px);}
+.giftbox.opened{animation:giftOpen 0.9s ease forwards;}
+@keyframes giftOpen{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.3) rotate(6deg);}
+  100%{transform:scale(2.4);opacity:0;}
+}
+.open-btn{
+  margin-top:8px;padding:16px 40px;border-radius:100px;border:1px solid var(--glass-border);
+  background:linear-gradient(135deg, rgba(255,95,158,0.18), rgba(157,92,255,0.18));
+  backdrop-filter:blur(14px);color:var(--white);font-family:var(--font-si);font-size:1.05rem;
+  cursor:pointer;letter-spacing:0.02em;transition:all 0.35s ease;
+  box-shadow:0 0 30px rgba(255,95,158,0.25);
+}
+.open-btn:hover{transform:translateY(-3px);box-shadow:0 8px 40px rgba(255,95,158,0.45);}
+
+/* ---------- glass card base ---------- */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* ---------- welcome ---------- */
+#welcome{text-align:center;padding-top:160px;}
+#welcome h1{
+  font-size:clamp(2.2rem,5vw,3.6rem);
+  background:linear-gradient(120deg,var(--rosegold),var(--pink) 50%,var(--amethyst));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:36px;
+}
+#typed-welcome{
+  font-size:clamp(1.1rem,2.4vw,1.5rem);color:var(--white-dim);min-height:120px;
+  max-width:700px;margin:0 auto;line-height:1.9;
+}
+.typed-cursor{color:var(--pink);}
+
+/* ---------- countdown ---------- */
+.section-heading{text-align:center;font-size:clamp(1.7rem,3.6vw,2.6rem);margin-bottom:14px;}
+.section-sub{text-align:center;color:var(--white-dim);max-width:640px;margin:0 auto 60px;font-size:1.05rem;line-height:1.8;}
+.timer-grid{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:900px;margin:0 auto;}
+.timer-box{
+  width:130px;padding:28px 10px;text-align:center;
+}
+.timer-box .num{
+  font-family:var(--font-display);font-size:2.6rem;font-weight:700;
+  background:linear-gradient(160deg,var(--white),var(--rosegold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  display:block;
+}
+.timer-box .lbl{font-size:0.85rem;color:var(--white-dim);margin-top:8px;letter-spacing:0.05em;}
+#celebration-mode{display:none;text-align:center;}
+#celebration-mode.active{display:block;}
+
+/* ---------- world clock ---------- */
+.clock-grid{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;max-width:800px;margin:0 auto 40px;}
+.clock-card{width:280px;padding:36px 20px;text-align:center;}
+.clock-card .flag{font-size:2.6rem;margin-bottom:10px;}
+.clock-card .city{font-family:var(--font-display);font-size:1.3rem;margin-bottom:14px;color:var(--rosegold);}
+.clock-card .time{font-size:2.4rem;font-weight:600;letter-spacing:0.03em;}
+.clock-card .date{color:var(--white-dim);font-size:0.9rem;margin-top:8px;}
+
+/* ---------- DISTANCE SECTION — signature piece ---------- */
+#distance{
+  padding-top:140px;padding-bottom:160px;
+  background:radial-gradient(ellipse at center, rgba(157,92,255,0.08), transparent 65%);
+}
+.distance-stage{
+  position:relative;width:min(820px,92vw);aspect-ratio:16/11;margin:0 auto;
+}
+#distance-svg{width:100%;height:100%;overflow:visible;}
+.distance-caption{
+  text-align:center;margin-top:50px;font-size:clamp(1.15rem,2.6vw,1.6rem);
+  font-family:var(--font-accent);font-style:italic;color:var(--white);
+  line-height:1.8;
+}
+.distance-caption .accent{color:var(--pink);}
+.km-badge{
+  display:inline-block;margin-top:22px;padding:10px 26px;border-radius:100px;
+  font-size:0.9rem;letter-spacing:0.08em;color:var(--rosegold);
+}
+
+/* ---------- gallery ---------- */
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:26px;max-width:1200px;margin:0 auto;
+}
+.gallery-item{
+  position:relative;border-radius:20px;overflow:hidden;cursor:pointer;
+  border:1px solid var(--glass-border);
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  transition:box-shadow 0.4s ease;
+}
+.gallery-item:hover{box-shadow:0 20px 60px rgba(255,95,158,0.3);}
+.gallery-item img{width:100%;height:290px;object-fit:cover;transition:transform 0.6s ease;}
+.gallery-item:hover img{transform:scale(1.08);}
+.gallery-caption{
+  position:absolute;bottom:0;left:0;right:0;padding:18px 16px 14px;
+  background:linear-gradient(0deg, rgba(7,4,13,0.92), transparent);
+  font-size:0.95rem;
+}
+#lightbox{
+  position:fixed;inset:0;background:rgba(7,4,13,0.94);z-index:9997;
+  display:none;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(10px);
+}
+#lightbox.active{display:flex;}
+#lightbox img{max-width:90vw;max-height:82vh;border-radius:16px;box-shadow:0 0 60px rgba(255,95,158,0.3);}
+#lightbox-close{position:absolute;top:26px;right:36px;font-size:2rem;cursor:pointer;color:var(--white);}
+
+/* ---------- love letter ---------- */
+.letter-card{max-width:720px;margin:0 auto;padding:60px 50px;}
+.letter-card h2{text-align:center;margin-bottom:36px;font-size:clamp(1.6rem,3.4vw,2.2rem);}
+.letter-card p{
+  font-size:1.08rem;line-height:2.1;color:var(--white-dim);margin-bottom:24px;
+  opacity:0;transform:translateY(16px);
+}
+.letter-sign{text-align:right;font-family:var(--font-accent);font-style:italic;font-size:1.3rem;color:var(--rosegold);margin-top:20px;}
+
+/* ---------- why I love you cards ---------- */
+.cards-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:26px;max-width:1100px;margin:0 auto;
+}
+.love-card{padding:44px 28px;text-align:center;transition:transform 0.4s ease;}
+.love-card .icon{font-size:2.2rem;margin-bottom:18px;}
+.love-card h3{font-size:1.15rem;font-family:var(--font-si);font-weight:600;color:var(--white);}
+
+/* ---------- love timer ---------- */
+.love-timer-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;max-width:960px;margin:0 auto;}
+.love-timer-grid .timer-box{width:110px;padding:22px 8px;}
+.love-timer-grid .num{font-size:2.1rem;}
+
+/* ---------- quotes ---------- */
+#quote-wrap{max-width:760px;margin:0 auto;text-align:center;padding:70px 40px;min-height:200px;display:flex;align-items:center;justify-content:center;}
+.quote-text{font-family:var(--font-accent);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);line-height:1.7;}
+
+/* ---------- our dream ---------- */
+#dream{text-align:center;}
+.dream-hearts{position:relative;width:260px;height:120px;margin:40px auto;}
+.dream-heart{position:absolute;top:50%;font-size:3.5rem;transform:translateY(-50%);}
+.dream-heart.left{left:0;animation:cometogether-l 3.5s ease-in-out infinite;}
+.dream-heart.right{right:0;animation:cometogether-r 3.5s ease-in-out infinite;}
+@keyframes cometogether-l{0%,100%{left:0;}50%{left:calc(50% - 34px);}}
+@keyframes cometogether-r{0%,100%{right:0;}50%{right:calc(50% - 34px);}}
+
+/* ---------- music player ---------- */
+#music-player{
+  position:fixed;bottom:22px;left:22px;z-index:9000;
+  display:flex;align-items:center;gap:14px;padding:12px 20px 12px 12px;
+  border-radius:100px;transition:transform 0.4s ease;
+}
+#music-player .cover{
+  width:46px;height:46px;border-radius:50%;object-fit:cover;
+  animation:spin 8s linear infinite;animation-play-state:paused;
+  border:1px solid var(--glass-border);
+}
+#music-player.playing .cover{animation-play-state:running;}
+#music-player button{
+  background:none;border:none;color:var(--white);font-size:1.1rem;cursor:pointer;
+}
+#music-progress{width:90px;height:3px;background:rgba(255,255,255,0.15);border-radius:10px;overflow:hidden;}
+#music-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--rosegold),var(--pink));}
+@media (max-width:640px){ #music-player{left:12px;bottom:12px;padding:10px 16px 10px 10px;} #music-progress{display:none;} }
+
+/* ---------- final surprise ---------- */
+#final{text-align:center;padding:180px 6vw;}
+.final-heart{
+  font-size:5rem;cursor:pointer;display:inline-block;
+  filter:drop-shadow(0 0 30px rgba(255,95,158,0.6));
+  animation:heartbeat 1.6s ease-in-out infinite;
+  transition:transform 0.3s ease;
+}
+.final-heart:hover{transform:scale(1.12);}
+@keyframes heartbeat{0%,100%{transform:scale(1);}25%{transform:scale(1.12);}40%{transform:scale(1);}}
+#final-message{margin-top:50px;opacity:0;transition:opacity 1.2s ease;font-size:clamp(1.2rem,2.8vw,1.7rem);line-height:2;}
+#final-message.show{opacity:1;}
+
+/* ---------- ending ---------- */
+#ending{text-align:center;padding-bottom:200px;}
+.ending-hearts{
+  display:flex;align-items:center;justify-content:center;gap:60px;flex-wrap:wrap;margin:50px 0;
+}
+.photo-heart{
+  width:220px;height:220px;position:relative;
+  clip-path:path('M110,210 C10,140 0,70 40,35 C70,8 105,15 110,55 C115,15 150,8 180,35 C220,70 210,140 110,210 Z');
+  overflow:hidden;box-shadow:0 0 50px rgba(255,95,158,0.4);
+}
+.photo-heart img{width:100%;height:100%;object-fit:cover;}
+.beam{width:3px;height:100px;background:linear-gradient(180deg,var(--pink),transparent);}
+.ending-text{max-width:640px;margin:30px auto 0;font-family:var(--font-accent);font-style:italic;font-size:clamp(1.15rem,2.6vw,1.6rem);line-height:1.9;}
+.signature-final{margin-top:50px;font-family:var(--font-accent);font-style:italic;font-size:1.5rem;color:var(--rosegold);}
+
+/* ---------- misc utility ---------- */
+.tilt-el{transform-style:preserve-3d;}
+.hidden-audio{display:none;}
+::selection{background:var(--pink);color:var(--void);}
+
+@media (max-width:640px){
+  section{padding:80px 5vw;}
+  .timer-box{width:100px;padding:20px 6px;}
+  .timer-box .num{font-size:1.9rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- FIXED BACKGROUND -->
+<div class="bg-fixed">
+  <div class="aurora-blob b1"></div>
+  <div class="aurora-blob b2"></div>
+  <div class="aurora-blob b3"></div>
+</div>
+<canvas id="stars-canvas"></canvas>
+<div id="floaty-container"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <p>මගේ ආදරණීය රැජින වෙනුවෙන්...</p>
+</div>
+
+<!-- OPENING SCENE -->
+<section id="opening">
+
+  <div class="opening-stage active" data-stage="1">
+    <div class="globe-wrap">
+      <svg id="globe-svg" viewBox="0 0 500 500">
+        <defs>
+          <radialGradient id="globeGrad" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#3a2060"/>
+            <stop offset="60%" stop-color="#1a0f2e"/>
+            <stop offset="100%" stop-color="#07040d"/>
+          </radialGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <circle cx="250" cy="250" r="190" fill="url(#globeGrad)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <g opacity="0.25" stroke="#c98a6b" stroke-width="0.8" fill="none">
+          <ellipse cx="250" cy="250" rx="190" ry="65"/>
+          <ellipse cx="250" cy="250" rx="190" ry="130"/>
+          <ellipse cx="250" cy="250" rx="65" ry="190"/>
+          <ellipse cx="250" cy="250" rx="130" ry="190"/>
+        </g>
+        <!-- Sri Lanka marker -->
+        <circle id="sl-dot" cx="330" cy="290" r="6" fill="#ff5f9e" filter="url(#glow)"/>
+        <text x="330" y="315" text-anchor="middle" font-size="13" fill="#f6eef2" font-family="Noto Sans Sinhala">ශ්‍රී ලංකාව</text>
+        <!-- Italy marker -->
+        <circle id="it-dot" cx="230" cy="175" r="6" fill="#9d5cff" filter="url(#glow)"/>
+        <text x="230" y="160" text-anchor="middle" font-size="13" fill="#f6eef2" font-family="Noto Sans Sinhala">ඉතාලිය</text>
+        <!-- connecting arc -->
+        <path id="connect-arc" d="M230,175 Q280,140 330,290" fill="none" stroke="url(#arcGrad)" stroke-width="2" stroke-dasharray="6 6" filter="url(#glow)"/>
+        <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#9d5cff"/><stop offset="100%" stop-color="#ff5f9e"/>
+        </linearGradient>
+        <!-- traveling hearts -->
+        <text class="travel-heart" font-size="14" fill="#ff5f9e">
+          <animateMotion dur="3s" repeatCount="indefinite" path="M230,175 Q280,140 330,290"/>❤
+        </text>
+        <text class="travel-heart" font-size="11" fill="#c98a6b">
+          <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M230,175 Q280,140 330,290"/>❤
+        </text>
+      </svg>
+    </div>
+    <p class="opening-text" id="op-text-1">කිලෝමීටර් දහස් ගණනක් අපිව වෙන් කළත්...</p>
+  </div>
+
+  <div class="opening-stage" data-stage="2">
+    <p class="opening-text">අපේ හදවත් හැමදාම එකටමයි... ❤️</p>
+  </div>
+
+  <div class="opening-stage" data-stage="3">
+    <div class="giftbox" id="giftbox">
+      <svg viewBox="0 0 200 200" width="100%" height="100%">
+        <defs>
+          <linearGradient id="boxGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff5f9e"/><stop offset="100%" stop-color="#9d5cff"/>
+          </linearGradient>
+        </defs>
+        <rect x="40" y="90" width="120" height="90" rx="8" fill="url(#boxGrad)" opacity="0.9"/>
+        <rect x="30" y="70" width="140" height="28" rx="6" fill="#c98a6b"/>
+        <rect x="92" y="70" width="16" height="110" fill="#f6eef2" opacity="0.85"/>
+        <path d="M100,70 C70,20 40,45 70,70 Z" fill="#ff5f9e"/>
+        <path d="M100,70 C130,20 160,45 130,70 Z" fill="#9d5cff"/>
+      </svg>
+    </div>
+    <p class="opening-text">මට ඔයාට කියන්න විශේෂ දෙයක් තියෙනවා...</p>
+    <button class="open-btn" id="openGiftBtn">මගේ හදවත විවෘත කරන්න 💝</button>
+  </div>
+
+</section>
+
+<!-- MAIN SITE (hidden until gift opened) -->
+<div id="main-site" style="display:none;">
+
+  <!-- WELCOME -->
+  <section id="welcome">
+    <span class="eyebrow">Welcome ආදරයෙන්</span>
+    <h1>මගේ ආදරණීය රැජින ❤️</h1>
+    <div id="typed-welcome"><span id="typed-target"></span></div>
+  </section>
+
+  <!-- ANNIVERSARY COUNTDOWN -->
+  <section id="countdown">
+    <span class="eyebrow" style="display:block;text-align:center;">Anniversary</span>
+    <h2 class="section-heading">අපේ ආදරේට අවුරුදු 3ක් සම්පූර්ණ වෙන්න තව...</h2>
+    <p class="section-sub">23 අගෝස්තු 2026 — ඔබ සිටින වේලාව අනුව ගණන් කරනු ලැබේ</p>
+    <div class="timer-grid" id="countdown-grid">
+      <div class="timer-box glass"><span class="num" id="cd-days">--</span><span class="lbl">දින</span></div>
+      <div class="timer-box glass"><span class="num" id="cd-hours">--</span><span class="lbl">පැය</span></div>
+      <div class="timer-box glass"><span class="num" id="cd-mins">--</span><span class="lbl">මිනිත්තු</span></div>
+      <div class="timer-box glass"><span class="num" id="cd-secs">--</span><span class="lbl">තත්පර</span></div>
+    </div>
+    <div id="celebration-mode">
+      <h2 class="section-heading" style="margin-top:40px;">අද අපේ ආදරේට අවුරුදු 3යි ❤️</h2>
+    </div>
+  </section>
+
+  <!-- WORLD CLOCK -->
+  <section id="worldclock">
+    <span class="eyebrow" style="display:block;text-align:center;">World Clock</span>
+    <h2 class="section-heading">අපි වෙනස් රටවල් දෙකක ජීවත් වුණත්...</h2>
+    <p class="section-sub">අපේ හදවත් එකම වේලාවට ආදරේ කරනවා...</p>
+    <div class="clock-grid">
+      <div class="clock-card glass">
+        <div class="flag">🇱🇰</div>
+        <div class="city">ශ්‍රී ලංකාව</div>
+        <div class="time" id="clock-lk">--:--:--</div>
+        <div class="date" id="date-lk">-</div>
+      </div>
+      <div class="clock-card glass">
+        <div class="flag">🇮🇹</div>
+        <div class="city">ඉතාලිය</div>
+        <div class="time" id="clock-it">--:--:--</div>
+        <div class="date" id="date-it">-</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISTANCE — SIGNATURE SECTION -->
+  <section id="distance">
+    <span class="eyebrow" style="display:block;text-align:center;">Two Skies, One Heart</span>
+    <h2 class="section-heading">දුර කියන්නේ සිතියමේ අංකයක් විතරයි...</h2>
+    <div class="distance-stage" data-aos="fade-up" data-aos-duration="1200">
+      <svg id="distance-svg" viewBox="0 0 800 550">
+        <defs>
+          <radialGradient id="earthGrad2" cx="30%" cy="25%" r="80%">
+            <stop offset="0%" stop-color="#2a1750"/>
+            <stop offset="55%" stop-color="#150a28"/>
+            <stop offset="100%" stop-color="#07040d"/>
+          </radialGradient>
+          <filter id="glowbig"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="distArc" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9d5cff"/>
+            <stop offset="50%" stop-color="#ff5f9e"/>
+            <stop offset="100%" stop-color="#c98a6b"/>
+          </linearGradient>
+        </defs>
+
+        <!-- starfield dots -->
+        <g id="dist-stars" opacity="0.55"></g>
+
+        <!-- rotating globe -->
+        <g id="dist-globe-rot" style="transform-origin:400px 300px;">
+          <circle cx="400" cy="300" r="230" fill="url(#earthGrad2)" stroke="rgba(255,255,255,0.07)"/>
+          <g opacity="0.22" stroke="#c98a6b" stroke-width="0.7" fill="none">
+            <ellipse cx="400" cy="300" rx="230" ry="80"/>
+            <ellipse cx="400" cy="300" rx="230" ry="155"/>
+            <ellipse cx="400" cy="300" rx="80" ry="230"/>
+            <ellipse cx="400" cy="300" rx="155" ry="230"/>
+          </g>
+        </g>
+
+        <!-- Sri Lanka -->
+        <circle cx="500" cy="360" r="7" fill="#ff5f9e" filter="url(#glowbig)"/>
+        <circle cx="500" cy="360" r="14" fill="none" stroke="#ff5f9e" stroke-width="1.5" opacity="0.5">
+          <animate attributeName="r" values="10;24;10" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="500" y="392" text-anchor="middle" font-size="15" fill="#f6eef2" font-family="Noto Sans Sinhala" font-weight="600">ශ්‍රී ලංකාව 🇱🇰</text>
+
+        <!-- Italy -->
+        <circle cx="330" cy="215" r="7" fill="#9d5cff" filter="url(#glowbig)"/>
+        <circle cx="330" cy="215" r="14" fill="none" stroke="#9d5cff" stroke-width="1.5" opacity="0.5">
+          <animate attributeName="r" values="10;24;10" dur="2.5s" repeatCount="indefinite" begin="1.2s"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="2.5s" repeatCount="indefinite" begin="1.2s"/>
+        </circle>
+        <text x="330" y="192" text-anchor="middle" font-size="15" fill="#f6eef2" font-family="Noto Sans Sinhala" font-weight="600">ඉතාලිය 🇮🇹</text>
+
+        <!-- glowing pulsing connecting arc -->
+        <path id="dist-arc" d="M330,215 Q415,150 500,360" fill="none" stroke="url(#distArc)" stroke-width="2.5" filter="url(#glowbig)" stroke-dasharray="8 8">
+          <animate attributeName="stroke-dashoffset" values="0;-32" dur="1.6s" repeatCount="indefinite"/>
+        </path>
+        <path d="M330,215 Q415,150 500,360" fill="none" stroke="url(#distArc)" stroke-width="6" opacity="0.15" filter="url(#glowbig)"/>
+
+        <!-- flying hearts along the arc, staggered -->
+        <text font-size="20" fill="#ff5f9e" filter="url(#glowbig)"><animateMotion dur="3.2s" repeatCount="indefinite" path="M330,215 Q415,150 500,360"/>❤</text>
+        <text font-size="14" fill="#c98a6b"><animateMotion dur="3.2s" begin="1.05s" repeatCount="indefinite" path="M330,215 Q415,150 500,360"/>❤</text>
+        <text font-size="17" fill="#9d5cff"><animateMotion dur="3.2s" begin="2.1s" repeatCount="indefinite" path="M330,215 Q415,150 500,360"/>❤</text>
+      </svg>
+    </div>
+    <p class="distance-caption">"ආදරේට <span class="accent">දුරක්</span> කියන දෙයක් නෑ..."</p>
+    <div style="text-align:center;"><span class="km-badge glass">🇱🇰 ⇢ 🇮🇹 ~8,500 km — නමුත් හදවත් 0 km</span></div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <span class="eyebrow" style="display:block;text-align:center;">Memories</span>
+    <h2 class="section-heading">අපේ මතක ❤️</h2>
+    <p class="section-sub">දුරින් හිටියත් ලස්සන මොහොත් අපිට ගොඩක් තියෙනවා...</p>
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </section>
+
+  <!-- LOVE LETTER -->
+  <section id="letter">
+    <div class="letter-card glass" data-aos="fade-up">
+      <h2>මගේ ආදරණීය රැජිනට ❤️</h2>
+      <p contenteditable="true" spellcheck="false">අද මේ වචන ලියන මොහොතේ මගේ හිතේ තියෙන හැඟීම් සම්පූර්ණයෙන්ම වචනවලට පෙරළන්න අමාරුයි.</p>
+      <p contenteditable="true" spellcheck="false">අපි හමුවෙලා නැති වුණත්, අපි අතර කිලෝමීටර් දහස් ගණනක් තිබුණත්, ඔයා මගේ ජීවිතේට ආපු දවසේ ඉඳන් හැම දෙයක්ම වෙනස් වුණා.</p>
+      <p contenteditable="true" spellcheck="false">දවසක ඔයා එක්ක එකම තැනක ඉඳගෙන හිනා වෙන්න, ඔයාගේ ළඟින් ඉඳලා කතා කරන්න, අපි මෙච්චර කාලයක් හීන දැක්ක ඒ මොහොත ජීවත් වෙන්න මම ගොඩක් ආසාවෙන් බලන් ඉන්නවා.</p>
+      <p contenteditable="true" spellcheck="false">ඔයා මගෙන් ඈත රටක හිටියත්, මගේ දවසේ ලස්සනම කොටස ඔයා. මගේ සතුටක්, මගේ හිනාවක්, මගේ බලාපොරොත්තුවක් වෙලා ඔයා ඉන්නවා.</p>
+      <p contenteditable="true" spellcheck="false">අපි අතර හැමදාම ලේසි දවස් තිබුණේ නැහැ. සමහර වෙලාවට දුර, කාලය, වෙනස් ජීවිත රටා අපිව පරීක්ෂා කළා. ඒත් ඒ හැම දෙයකටම වඩා අපේ ආදරේ ශක්තිමත් කියලා මම විශ්වාස කරනවා.</p>
+      <p contenteditable="true" spellcheck="false">ඔයාගේ එක පුංචි message එකක්, එක call එකක්, එක හිනාවක් පවා මගේ දවස ලස්සන කරන්න පුළුවන්.</p>
+      <p contenteditable="true" spellcheck="false">මේ අවුරුදු 3 පුරාවට මට දුන්න ආදරේට, විශ්වාසයට, මාව තේරුම් ගත්තට මම හදවතින්ම ස්තූති කරනවා.</p>
+      <p contenteditable="true" spellcheck="false">මම පොරොන්දු වෙනවා, දුර තිබුණත් ඔයා වෙනුවෙන් මගේ ආදරේ, මගේ ගෞරවය සහ මගේ කැපවීම හැමදාම ඒ විදිහටම තියෙනවා කියලා.</p>
+      <p contenteditable="true" spellcheck="false">දවසක මේ දුර අවසන් වෙලා, අපි දෙන්නා එකම තැනක ඉඳගෙන මේ දවස් මතක් කරලා හිනා වෙන දවස එනකන් මම ආසාවෙන් බලන් ඉන්නවා.</p>
+      <p contenteditable="true" spellcheck="false">මගේ ජීවිතේට ආවට ස්තූතියි. ඔයා මගේ ජීවිතේ ලස්සනම කතාවේ ලස්සනම පරිච්ඡේදයයි.</p>
+      <p contenteditable="true" spellcheck="false" style="font-weight:600;">හැමදාමත්...</p>
+      <div class="letter-sign">ඔයාටම ආදරෙන්,<br>ඔයාගේ සුදු මහත්තයා ❤️</div>
+    </div>
+  </section>
+
+  <!-- WHY I LOVE YOU -->
+  <section id="why">
+    <span class="eyebrow" style="display:block;text-align:center;">Reasons</span>
+    <h2 class="section-heading">ඇයි මම ඔයාට ආදරෙයි</h2>
+    <div class="cards-grid">
+      <div class="love-card glass tilt-el" data-aos="zoom-in" data-aos-delay="0"><div class="icon">😊</div><h3>ඔයාගේ හිනාව</h3></div>
+      <div class="love-card glass tilt-el" data-aos="zoom-in" data-aos-delay="100"><div class="icon">💜</div><h3>ඔයාගේ හිත</h3></div>
+      <div class="love-card glass tilt-el" data-aos="zoom-in" data-aos-delay="200"><div class="icon">🤍</div><h3>ඔයාගේ සැලකිල්ල</h3></div>
+      <div class="love-card glass tilt-el" data-aos="zoom-in" data-aos-delay="300"><div class="icon">❤️</div><h3>ඔයාගේ ආදරේ</h3></div>
+      <div class="love-card glass tilt-el" data-aos="zoom-in" data-aos-delay="400"><div class="icon">✨</div><h3>ඔයා නිසා මගේ ජීවිතේ ලස්සනයි</h3></div>
+    </div>
+  </section>
+
+  <!-- LOVE TIMER -->
+  <section id="lovetimer">
+    <span class="eyebrow" style="display:block;text-align:center;">Since 23.08.2023</span>
+    <h2 class="section-heading">අපි ආදරේ කරපු කාලය</h2>
+    <div class="love-timer-grid" id="love-timer-grid">
+      <div class="timer-box glass"><span class="num" id="lt-y">-</span><span class="lbl">අවුරුදු</span></div>
+      <div class="timer-box glass"><span class="num" id="lt-mo">-</span><span class="lbl">මාස</span></div>
+      <div class="timer-box glass"><span class="num" id="lt-d">-</span><span class="lbl">දින</span></div>
+      <div class="timer-box glass"><span class="num" id="lt-h">-</span><span class="lbl">පැය</span></div>
+      <div class="timer-box glass"><span class="num" id="lt-m">-</span><span class="lbl">මිනිත්තු</span></div>
+      <div class="timer-box glass"><span class="num" id="lt-s">-</span><span class="lbl">තත්පර</span></div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="quotes">
+    <div id="quote-wrap" class="glass">
+      <p class="quote-text" id="quote-text">"ඔයා තමයි මගේ ලෝකේ ලස්සනම පුද්ගලයා."</p>
+    </div>
+  </section>
+
+  <!-- OUR DREAM -->
+  <section id="dream">
+    <span class="eyebrow" style="display:block;text-align:center;">Our Dream</span>
+    <h2 class="section-heading">අද අපි රටවල් දෙකක...</h2>
+    <div class="dream-hearts">
+      <span class="dream-heart left">❤️</span>
+      <span class="dream-heart right">❤️</span>
+    </div>
+    <p class="section-sub" style="margin-top:0;">හෙට අපි එකම තැනක...</p>
+  </section>
+
+  <!-- FINAL SURPRISE -->
+  <section id="final">
+    <span class="eyebrow" style="display:block;">Tap the heart</span>
+    <div class="final-heart" id="finalHeart">❤️</div>
+    <div id="final-message">
+      <p>මම ඔයාට ගොඩක් ආදරෙයි ❤️</p>
+      <p style="margin-top:20px;">අද වගේම... හෙටත්... හැමදාමත්...<br>මගේ හදවතේ එකම තැන ඔයාටයි...</p>
+    </div>
+  </section>
+
+  <!-- ENDING -->
+  <section id="ending">
+    <span class="eyebrow" style="display:block;">Forever</span>
+    <div class="ending-hearts" data-aos="fade-up">
+      <div class="photo-heart"><img src="images/1784202640073_2.jpeg" alt="ඔයා"></div>
+      <div class="beam" style="align-self:center;"></div>
+      <div class="photo-heart"><img src="images/1784202640075_3.jpeg" alt="අපි"></div>
+    </div>
+    <p class="ending-text">"කිලෝමීටර් දහස් ගණනක් අපිව වෙන් කළත්...<br>අපේ හදවත් කවදාවත් වෙන් වෙන්නේ නෑ..."</p>
+    <p class="ending-text" style="margin-top:24px;">"අද අපි දුරින්... හෙට අපි එකට..."</p>
+    <p class="ending-text" style="margin-top:24px;font-weight:600;">"හැමදාම... සදහටම... ඔයාටම ආදරෙයි ❤️"</p>
+    <div class="signature-final">ආදරෙන්<br>ඔයාගේ සුදු මහත්තයා ❤️</div>
+  </section>
+
+</div><!-- /main-site -->
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span id="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- MUSIC PLAYER -->
+<div id="music-player" class="glass">
+  <img class="cover" id="music-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23241338'/%3E%3Ctext x='50' y='58' font-size='40' text-anchor='middle'%3E%E2%9D%A4%3C/text%3E%3C/svg%3E" alt="cover">
+  <button id="music-toggle">▶</button>
+  <div id="music-progress"><div id="music-progress-bar"></div></div>
+  <!-- Place your song file as "song.mp3" next to index.html to activate the player -->
+  <audio id="bg-audio" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+/* ================= CURSOR ================= */
+const dot = document.getElementById('cursorDot');
+const glow = document.getElementById('cursorGlow');
+window.addEventListener('mousemove', e=>{
+  dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+  glow.style.left = e.clientX+'px'; glow.style.top = e.clientY+'px';
+});
+
+/* ================= SCROLL PROGRESS ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById('scroll-progress').style.width = pct+'%';
+});
+
+/* ================= STARFIELD ================= */
+const starCanvas = document.getElementById('stars-canvas');
+const sctx = starCanvas.getContext('2d');
+function resizeStars(){ starCanvas.width = innerWidth; starCanvas.height = innerHeight; }
+resizeStars(); window.addEventListener('resize', resizeStars);
+const stars = Array.from({length:160}, ()=>({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  r:Math.random()*1.4+0.3, s:Math.random()*0.02+0.005, a:Math.random()
+}));
+function drawStars(){
+  sctx.clearRect(0,0,starCanvas.width,starCanvas.height);
+  stars.forEach(st=>{
+    st.a += st.s; const alpha = (Math.sin(st.a)+1)/2;
+    sctx.beginPath(); sctx.arc(st.x,st.y,st.r,0,7);
+    sctx.fillStyle = `rgba(246,238,242,${alpha*0.8})`; sctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* dist-stars small svg version */
+const distStarsG = document.getElementById('dist-stars');
+if(distStarsG){
+  for(let i=0;i<50;i++){
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', Math.random()*800);
+    c.setAttribute('cy', Math.random()*550);
+    c.setAttribute('r', (Math.random()*1.2+0.3).toFixed(2));
+    c.setAttribute('fill', '#f6eef2');
+    distStarsG.appendChild(c);
+  }
+}
+
+/* ================= FLOATING HEARTS/PETALS/BUTTERFLIES ================= */
+const floatyContainer = document.getElementById('floaty-container');
+const symbols = ['❤','🌸','🦋','✨','💗'];
+function spawnFloaty(){
+  const el = document.createElement('div');
+  el.className='floaty';
+  el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+  const size = Math.random()*16+14;
+  el.style.fontSize = size+'px';
+  el.style.left = Math.random()*100+'vw';
+  el.style.setProperty('--drift', (Math.random()*160-80)+'px');
+  const dur = Math.random()*10+12;
+  el.style.animationDuration = dur+'s';
+  floatyContainer.appendChild(el);
+  setTimeout(()=>el.remove(), dur*1000+500);
+}
+setInterval(spawnFloaty, 900);
+for(let i=0;i<6;i++) setTimeout(spawnFloaty, i*300);
+
+/* ================= LOADER ================= */
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hide');
+  }, 2200);
+});
+
+/* ================= OPENING SEQUENCE ================= */
+let openStage = 1;
+function showStage(n){
+  document.querySelectorAll('.opening-stage').forEach(s=>s.classList.remove('active'));
+  const el = document.querySelector(`.opening-stage[data-stage="${n}"]`);
+  if(el) el.classList.add('active');
+}
+setTimeout(()=>{ showStage(2); }, 4200);
+setTimeout(()=>{ showStage(3); }, 7200);
+
+/* Gift box open -> reveal main site, play music */
+document.getElementById('giftbox').addEventListener('click', openGift);
+document.getElementById('openGiftBtn').addEventListener('click', openGift);
+let giftOpened = false;
+function openGift(){
+  if(giftOpened) return; giftOpened = true;
+  const box = document.getElementById('giftbox');
+  box.classList.add('opened');
+  confetti({particleCount:150, spread:90, colors:['#ff5f9e','#9d5cff','#c98a6b','#f6eef2']});
+  const audio = document.getElementById('bg-audio');
+  audio.play().catch(()=>{ /* autoplay might be blocked until user gesture — this click counts as one */ });
+  document.getElementById('music-player').classList.add('playing');
+  document.getElementById('music-toggle').textContent = '❚❚';
+
+  setTimeout(()=>{
+    document.getElementById('opening').style.display='none';
+    document.getElementById('main-site').style.display='block';
+    AOS.init({duration:900, once:true});
+    window.scrollTo({top:0, behavior:'instant'});
+    initAfterReveal();
+  }, 900);
+}
+
+/* ================= TYPED WELCOME ================= */
+function initTyped(){
+  new Typed('#typed-target', {
+    strings:[
+      'හැම උදේකම මගේ පළවෙනි හිතන කෙනා ඔයා...',
+      'හැම රෑකම මගේ අන්තිම හිතන කෙනාත් ඔයා...',
+      'අපි අතර දුර තිබුණත්...',
+      'මගේ හදවත හැමදාම ඔයා ළඟයි...'
+    ],
+    typeSpeed:38, backSpeed:16, backDelay:1400, startDelay:400,
+    loop:true, smartBackspace:true
+  });
+}
+
+/* ================= ANNIVERSARY COUNTDOWN ================= */
+function updateCountdown(){
+  const target = new Date('2026-08-23T00:00:00');
+  const now = new Date();
+  let diff = target - now;
+  if(diff <= 0){
+    document.getElementById('countdown-grid').style.display='none';
+    document.getElementById('celebration-mode').classList.add('active');
+    if(!window._celebrated){
+      window._celebrated = true;
+      celebrateAnniversary();
+    }
+    return;
+  }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor(diff%86400000/3600000);
+  const m = Math.floor(diff%3600000/60000);
+  const s = Math.floor(diff%60000/1000);
+  document.getElementById('cd-days').textContent = d;
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+}
+function celebrateAnniversary(){
+  const dur = 6000, end = Date.now()+dur;
+  (function frame(){
+    confetti({particleCount:6, angle:60, spread:70, origin:{x:0}, colors:['#ff5f9e','#9d5cff','#c98a6b']});
+    confetti({particleCount:6, angle:120, spread:70, origin:{x:1}, colors:['#ff5f9e','#9d5cff','#c98a6b']});
+    if(Date.now()<end) requestAnimationFrame(frame);
+  })();
+}
+setInterval(updateCountdown, 1000);
+
+/* ================= WORLD CLOCK ================= */
+function updateWorldClocks(){
+  const now = new Date();
+  const lk = new Intl.DateTimeFormat('si-LK',{timeZone:'Asia/Colombo',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
+  const it = new Intl.DateTimeFormat('si-LK',{timeZone:'Europe/Rome',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
+  const lkDate = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Colombo',day:'2-digit',month:'short',year:'numeric'}).format(now);
+  const itDate = new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Rome',day:'2-digit',month:'short',year:'numeric'}).format(now);
+  document.getElementById('clock-lk').textContent = lk;
+  document.getElementById('clock-it').textContent = it;
+  document.getElementById('date-lk').textContent = lkDate;
+  document.getElementById('date-it').textContent = itDate;
+}
+setInterval(updateWorldClocks, 1000);
+
+/* ================= LOVE TIMER (since 23 Aug 2023) ================= */
+function updateLoveTimer(){
+  const start = new Date('2023-08-23T00:00:00');
+  const now = new Date();
+  let years = now.getFullYear()-start.getFullYear();
+  let months = now.getMonth()-start.getMonth();
+  let days = now.getDate()-start.getDate();
+  let hours = now.getHours()-start.getHours();
+  let mins = now.getMinutes()-start.getMinutes();
+  let secs = now.getSeconds()-start.getSeconds();
+  if(secs<0){secs+=60;mins--;}
+  if(mins<0){mins+=60;hours--;}
+  if(hours<0){hours+=24;days--;}
+  if(days<0){ const prevMonth = new Date(now.getFullYear(), now.getMonth(),0).getDate(); days+=prevMonth; months--; }
+  if(months<0){months+=12;years--;}
+  document.getElementById('lt-y').textContent = years;
+  document.getElementById('lt-mo').textContent = months;
+  document.getElementById('lt-d').textContent = days;
+  document.getElementById('lt-h').textContent = hours;
+  document.getElementById('lt-m').textContent = mins;
+  document.getElementById('lt-s').textContent = secs;
+}
+setInterval(updateLoveTimer, 1000);
+
+/* ================= LOVE QUOTES ================= */
+const quotes = [
+  '"ඔයා තමයි මගේ ලෝකේ ලස්සනම පුද්ගලයා."',
+  '"දුර තිබුණත් ආදරේ අඩු වෙන්නේ නෑ."',
+  '"හැමදාම මම ඔයාටම ආදරෙයි."',
+  '"අද දුරින්... හෙට එකට..."'
+];
+let qIdx = 0;
+function rotateQuote(){
+  const el = document.getElementById('quote-text');
+  el.style.opacity = 0;
+  setTimeout(()=>{
+    qIdx = (qIdx+1)%quotes.length;
+    el.innerHTML = quotes[qIdx].replace('...','...<br>');
+    el.style.opacity = 1;
+  }, 500);
+}
+setInterval(rotateQuote, 4000);
+
+/* ================= GALLERY ================= */
+const galleryPhotos = [
+  {src:'images/1784202640072_1.jpeg', cap:'ලස්සන මොහොතක්'},
+  {src:'images/1784202640073_2.jpeg', cap:'ඔයාගේ හිනාව ❤️'},
+  {src:'images/1784202640075_3.jpeg', cap:'මගේ ආදරණීය රැජින'},
+  {src:'images/1784202640077_4.jpeg', cap:'මතක සුන්දරයි'},
+  {src:'images/1784202640078_5.jpeg', cap:'ආදරයෙන් පිරුණු මතක'},
+  {src:'images/1784202640069_6.jpeg', cap:'විශේෂ මොහොතක්'}
+];
+const galleryGrid = document.getElementById('gallery-grid');
+galleryPhotos.forEach((p,i)=>{
+  const item = document.createElement('div');
+  item.className='gallery-item tilt-el';
+  item.setAttribute('data-aos','fade-up');
+  item.setAttribute('data-aos-delay', (i%3)*100);
+  item.innerHTML = `<img src="${p.src}" alt="${p.cap}" loading="lazy"><div class="gallery-caption">${p.cap}</div>`;
+  item.addEventListener('click', ()=>openLightbox(p.src));
+  galleryGrid.appendChild(item);
+});
+function openLightbox(src){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+document.getElementById('lightbox-close').addEventListener('click', ()=>{
+  document.getElementById('lightbox').classList.remove('active');
+});
+document.getElementById('lightbox').addEventListener('click', (e)=>{
+  if(e.target.id==='lightbox') document.getElementById('lightbox').classList.remove('active');
+});
+
+/* ================= LETTER PARAGRAPH REVEAL ================= */
+function initLetterAnim(){
+  const paras = document.querySelectorAll('.letter-card p');
+  if(window.gsap && window.ScrollTrigger){
+    gsap.registerPlugin(ScrollTrigger);
+    paras.forEach((p,i)=>{
+      gsap.to(p, {
+        opacity:1, y:0, duration:1, delay:i*0.25,
+        scrollTrigger:{ trigger:'.letter-card', start:'top 75%' }
+      });
+    });
+  } else {
+    paras.forEach(p=>{p.style.opacity=1; p.style.transform='none';});
+  }
+}
+
+/* ================= FINAL SURPRISE ================= */
+document.getElementById('finalHeart').addEventListener('click', ()=>{
+  const dur = 2500, end = Date.now()+dur;
+  (function frame(){
+    confetti({particleCount:8, spread:100, origin:{x:Math.random(), y:Math.random()*0.4}, colors:['#ff5f9e','#9d5cff','#c98a6b','#f6eef2']});
+    if(Date.now()<end) requestAnimationFrame(frame);
+  })();
+  confetti({particleCount:200, spread:160, origin:{y:0.6}, colors:['#ff5f9e','#9d5cff','#c98a6b']});
+  document.getElementById('final-message').classList.add('show');
+});
+
+/* ================= MUSIC PLAYER ================= */
+const audio = document.getElementById('bg-audio');
+const toggleBtn = document.getElementById('music-toggle');
+const playerEl = document.getElementById('music-player');
+toggleBtn.addEventListener('click', ()=>{
+  if(audio.paused){
+    audio.play().catch(()=>{});
+    playerEl.classList.add('playing');
+    toggleBtn.textContent = '❚❚';
+  } else {
+    audio.pause();
+    playerEl.classList.remove('playing');
+    toggleBtn.textContent = '▶';
+  }
+});
+audio.addEventListener('timeupdate', ()=>{
+  if(audio.duration){
+    document.getElementById('music-progress-bar').style.width = (audio.currentTime/audio.duration*100)+'%';
+  }
+});
+
+/* ================= TILT ================= */
+function initTilt(){
+  if(window.VanillaTilt){
+    VanillaTilt.init(document.querySelectorAll('.tilt-el'), {max:8, speed:400, glare:true, 'max-glare':0.15});
+  }
+}
+
+/* ================= INIT AFTER REVEAL ================= */
+function initAfterReveal(){
+  initTyped();
+  initLetterAnim();
+  initTilt();
+  updateCountdown();
+  updateWorldClocks();
+  updateLoveTimer();
+  setTimeout(()=>{ initTilt(); }, 500); // re-init once gallery items exist
+}
+</script>
+</body>
+</html>
